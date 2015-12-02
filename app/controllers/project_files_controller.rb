@@ -69,6 +69,6 @@ class ProjectFilesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def project_file_params
-      params.require(:project_file).permit(:file, :file_type)
+      params.require(:project_file).permit(:file)
     end
 end

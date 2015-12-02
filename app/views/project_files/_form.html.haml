@@ -9,8 +9,6 @@
   .field
     = f.label :file
     = f.file_field :file
-  .field
-    = f.label :file_type
-    = f.select :file_type, ProjectFile::TYPES
   .actions
+    = f.hidden_field :file_type
     = f.submit 'Upload and Parse'
