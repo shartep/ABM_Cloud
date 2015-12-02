@@ -1,0 +1,23 @@
+%h1 Listing suppliers
+
+%table
+  %thead
+    %tr
+      %th Code
+      %th Name
+      %th
+      %th
+      %th
+
+  %tbody
+    - @suppliers.each do |supplier|
+      %tr
+        %td= supplier.code
+        %td= supplier.name
+        %td= link_to 'Show', supplier
+        %td= link_to 'Edit', edit_supplier_path(supplier)
+        %td= link_to 'Destroy', supplier, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Supplier', new_supplier_path

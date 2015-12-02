@@ -1,0 +1,12 @@
+%p#notice= notice
+
+%p
+  %b File:
+  = @project_file.file
+%p
+  %b File type:
+  = @project_file.file_type
+
+= link_to 'Edit', edit_project_file_path(@project_file)
+\|
+= link_to 'Back', project_files_path

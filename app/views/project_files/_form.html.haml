@@ -1,0 +1,16 @@
+= form_for @project_file do |f|
+  - if @project_file.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@project_file.errors.count, "error")} prohibited this project_file from being saved:"
+      %ul
+        - @project_file.errors.full_messages.each do |msg|
+          %li= msg
+
+  .field
+    = f.label :file
+    = f.file_field :file
+  .field
+    = f.label :file_type
+    = f.select :file_type, ProjectFile::TYPES
+  .actions
+    = f.submit 'Upload and Parse'

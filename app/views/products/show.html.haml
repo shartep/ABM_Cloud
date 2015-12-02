@@ -1,0 +1,33 @@
+%p#notice= notice
+
+%p
+  %b Sku:
+  = @product.sku
+%p
+  %b Supplier code:
+  = @product.supplier_code
+%p
+  %b Field 1:
+  = @product.field_1
+%p
+  %b Field 2:
+  = @product.field_2
+%p
+  %b Field 3:
+  = @product.field_3
+%p
+  %b Field 4:
+  = @product.field_4
+%p
+  %b Field 5:
+  = @product.field_5
+%p
+  %b Field 6:
+  = @product.field_6
+%p
+  %b Price:
+  = @product.price
+
+= link_to 'Edit', edit_product_path(@product)
+\|
+= link_to 'Back', products_path

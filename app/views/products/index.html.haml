@@ -1,0 +1,37 @@
+%h1 Listing products
+
+%table
+  %thead
+    %tr
+      %th Sku
+      %th Supplier code
+      %th Field 1
+      %th Field 2
+      %th Field 3
+      %th Field 4
+      %th Field 5
+      %th Field 6
+      %th Price
+      %th
+      %th
+      %th
+
+  %tbody
+    - @products.each do |product|
+      %tr
+        %td= product.sku
+        %td= product.supplier_code
+        %td= product.field_1
+        %td= product.field_2
+        %td= product.field_3
+        %td= product.field_4
+        %td= product.field_5
+        %td= product.field_6
+        %td= product.price
+        %td= link_to 'Show', product
+        %td= link_to 'Edit', edit_product_path(product)
+        %td= link_to 'Destroy', product, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Product', new_product_path

@@ -1,0 +1,23 @@
+%h1 Listing project_files
+
+%table
+  %thead
+    %tr
+      %th File
+      %th File type
+      %th
+      %th
+      %th
+
+  %tbody
+    - @project_files.each do |project_file|
+      %tr
+        %td= project_file.file
+        %td= project_file.file_type
+        %td= link_to 'Show', project_file
+        %td= link_to 'Edit', edit_project_file_path(project_file)
+        %td= link_to 'Destroy', project_file, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Project file', new_project_file_path
