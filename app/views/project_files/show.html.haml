@@ -6,5 +6,17 @@
 %p
   %b File type:
   = @project_file.file_type
+%p
+  %b Parsing Status:
+  %span#parsing_status
+    = @project_file.parsing_status.capitalize
 
 = link_to 'Back', new_project_file_path
+
+:javascript
+  $(document).ready(function(){
+    clearInterval(window.interval);
+    window.interval = setInterval(function(){
+      $.ajax({url: "#{project_file_url(@project_file)}", dataType: 'script'});
+    }, 2000);
+  });

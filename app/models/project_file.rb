@@ -1,5 +1,7 @@
 class ProjectFile < ActiveRecord::Base
-  before_save :set_file_type
+  # include Sidekiq::Worker
+
+  before_create :set_file_type
   after_create :parse_file
 
   has_attached_file :file
@@ -9,7 +11,15 @@ class ProjectFile < ActiveRecord::Base
   validate :validate_file_name
 
   TYPES = [:products, :suppliers]
-  PARSING_STATUSES = [:uploaded, :parsing, :complete]
+  PARSING_STATUSES = [:uploaded, :parsing, :complete, :error]
+
+  def self.parse_suppliers file
+    puts "+++++++++++"
+  end
+
+  def self.parse_products file
+    puts "***********"
+  end
 
   private
     def set_file_type
@@ -24,6 +34,14 @@ class ProjectFile < ActiveRecord::Base
     def parse_file
       self.update parsing_status: :parsing
       puts "start parsing file #{self.file_file_name}, type - #{self.file_type}"
+      case self.file_type
+        when :suppliers.to_s
+          ProjectFile.delay.parse_suppliers self
+        when :products.to_s
+          ProjectFile.delay.parse_products self
+        else
+          self.update parsing_status: :error
+      end
     end
 
     def validate_file_name

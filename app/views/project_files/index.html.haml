@@ -5,6 +5,7 @@
     %tr
       %th File
       %th File type
+      %th Parsing Status
       %th
       %th
       %th
@@ -14,6 +15,7 @@
       %tr
         %td= project_file.file
         %td= project_file.file_type
+        %td#parsing_status= project_file.parsing_status
         %td= link_to 'Show', project_file
         %td= link_to 'Edit', edit_project_file_path(project_file)
         %td= link_to 'Destroy', project_file, :method => :delete, :data => { :confirm => 'Are you sure?' }
