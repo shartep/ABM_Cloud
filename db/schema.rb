@@ -11,23 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151202175639) do
+ActiveRecord::Schema.define(version: 20151203144705) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "products", force: :cascade do |t|
-    t.string   "sku",                         null: false
-    t.string   "supplier_code",               null: false
+    t.string   "sku",                                   null: false
+    t.string   "supplier_code",                         null: false
     t.text     "field_1"
     t.text     "field_2"
     t.text     "field_3"
     t.text     "field_4"
     t.text     "field_5"
     t.text     "field_6"
-    t.decimal  "price",         precision: 2
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.decimal  "price",         precision: 8, scale: 2
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
   end
 
   add_index "products", ["sku"], name: "index_products_on_sku", using: :btree

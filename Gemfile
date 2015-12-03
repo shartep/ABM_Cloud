@@ -36,6 +36,7 @@ gem 'haml'
 gem 'haml-rails'
 gem 'paperclip'
 gem 'sidekiq'
+gem 'smarter_csv'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

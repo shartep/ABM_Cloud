@@ -12,13 +12,76 @@ class ProjectFile < ActiveRecord::Base
 
   TYPES = [:products, :suppliers]
   PARSING_STATUSES = [:uploaded, :parsing, :complete, :error]
-
-  def self.parse_suppliers file
-    puts "+++++++++++"
-  end
+  SUPPLIERS_FILE_COLUMNS = [:code, :name]
+  PRODUCTS_FILE_COLUMNS = [:sku, :supplier_code, :field_1, :field_2, :field_3, :field_4, :field_5, :field_6, :price]
 
   def self.parse_products file
-    puts "***********"
+    error = false
+    begin
+      f = File.open(file.file.path)
+
+      ## mark parsing as started
+      file.update parsing_status: :parsing
+
+      # TODO: add validation of .csv file header
+
+      ## this is an all or nothing process, either all of the suppliers should be created, or none should
+      ActiveRecord::Base.transaction do
+        ## parse the CSV in chunks
+        SmarterCSV.process(f, {chunk_size: 1000, strings_as_keys: true, convert_values_to_numeric: false, user_provided_headers: PRODUCTS_FILE_COLUMNS}) do |chunk|
+          chunk.each do |prod_hash|
+            raise Exception.new 'Error: there is product with empty sku in your file' if prod_hash[:sku].blank?
+            raise Exception.new 'Error: there is supplier with empty code in your file' if prod_hash[:supplier_code].blank?
+
+            Supplier.find_or_create_by code: prod_hash[:supplier_code]
+            product = Product.find_or_initialize_by sku: prod_hash[:sku]
+            product.attributes = prod_hash
+            product.save
+          end
+        end
+      end
+    rescue Exception => e
+      ## log the error and mark the file as errored
+      puts e
+      file.update parsing_status: e.message
+      error = true
+    end
+
+    f.try(:close)
+    file.update(parsing_status: :parsed) unless error
+  end
+
+  def self.parse_suppliers file
+    error = false
+    begin
+      f = File.open(file.file.path)
+
+      ## mark parsing as started
+      file.update parsing_status: :parsing
+
+      # TODO: add validation of .csv file header
+
+      ## this is an all or nothing process, either all of the suppliers should be created, or none should
+      ActiveRecord::Base.transaction do
+        ## parse the CSV in chunks
+        SmarterCSV.process(f, {chunk_size: 1000, strings_as_keys: true, convert_values_to_numeric: false, user_provided_headers: SUPPLIERS_FILE_COLUMNS}) do |chunk|
+          chunk.each do |sup_hash|
+            raise Exception.new 'Error: there is supplier with empty code in your file' if sup_hash[:code].blank?
+            supplier = Supplier.find_or_initialize_by code: sup_hash[:code]
+            supplier.name = sup_hash[:name]
+            supplier.save if supplier.changed?
+          end
+        end
+      end
+    rescue Exception => e
+      ## log the error and mark the file as errored
+      puts e
+      file.update parsing_status: e.message
+      error = true
+    end
+
+    f.try(:close)
+    file.update(parsing_status: :parsed) unless error
   end
 
   private
@@ -32,7 +95,6 @@ class ProjectFile < ActiveRecord::Base
     end
 
     def parse_file
-      self.update parsing_status: :parsing
       puts "start parsing file #{self.file_file_name}, type - #{self.file_type}"
       case self.file_type
         when :suppliers.to_s
