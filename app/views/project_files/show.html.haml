@@ -11,7 +11,9 @@
   %span#parsing_status
     = @project_file.parsing_status.capitalize
 
-= link_to 'Back', new_project_file_path
+= link_to 'Upload New File', new_project_file_path
+
+= link_to 'Product List', products_path
 
 :javascript
   $(document).ready(function(){
